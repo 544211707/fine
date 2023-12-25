@@ -39,7 +39,7 @@
         const result = phoneNumbers.join(" ");
         this.transformedText=result;
         this.generateQRCode(result);
-        // this.copyToClipBoard(result);
+        this.copyToClipBoard(result);
       },
       generateQRCode(result) {
       // 使用 qrcode.js 生成二维码
