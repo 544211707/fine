@@ -1,0 +1,57 @@
+<!-- Vue所管理的范围 -->
+<div id="app">
+  <!-- 用于渲染的代码逻辑 -->
+  <h1>{{ msg }}</h1>
+  <textarea name="" id="" cols="30" rows="10" v-model="originText"></textarea>
+
+  <button class="button" @click="transform()">转换并复制</button>
+  <div>{{transformedText}}</div>
+</div>
+<!-- 引入的是开发版本包 - 包含完整的注释和警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+<script>
+  // 一旦引入 VueJS核心包，在全局环境，就有了 Vue 构造函数
+  new Vue({
+    // 通过 el 配置选择器，指定 Vue 管理的是哪个容器，值通常为css选择器字符串
+    el: "#app",
+    // 通过 data 提供数据
+    data: {
+      msg: "Hello World",
+      count: 666,
+      originText: "",
+      transformedText:"",
+    },
+    methods: {
+      transform() {
+        // 正则表达式匹配手机号码
+        const phoneNumbers = this.originText.match(/1[3456789]\d{9}/g);
+
+        // 将匹配到的手机号用空格隔开
+        const result = phoneNumbers.join(" ");
+        this.transformedText=result;
+        this.copyToClipBoard(result);
+      },
+      copyToClipBoard(result) {
+        // 创建一个临时的textarea元素
+        const textarea = document.createElement("textarea");
+        textarea.value = result;
+
+        // 将textarea添加到DOM中
+        document.body.appendChild(textarea);
+
+        // 选中textarea中的内容
+        textarea.select();
+
+        // 执行复制操作
+        document.execCommand("copy");
+
+        // 从DOM中移除textarea
+        document.body.removeChild(textarea);
+      },
+    },
+  });
+</script>
+<style>
+  .button {
+  }
+</style>
