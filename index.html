@@ -1,14 +1,20 @@
 <!-- Vue所管理的范围 -->
-<div id="app">
+<div id="app" class="main_index">
   <!-- 用于渲染的代码逻辑 -->
   <h1>{{ msg }}</h1>
-  <textarea name="" id="" cols="30" rows="10" v-model="originText"></textarea>
+  
+  <textarea name="" id="" cols="30" rows="3" v-model="originText"></textarea>
 
   <button class="button" @click="transform()">转换并复制</button>
-  <div>{{transformedText}}</div>
+  <textarea class="transformedText" v-model="transformedText"></textarea>
+  <div id="qrcode"></div>
 </div>
 <!-- 引入的是开发版本包 - 包含完整的注释和警告 -->
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+<!-- 使用 BootCDN 提供的 qrcodejs2 CDN 地址 -->
+<script src="https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.js"></script>
+
+
 <script>
   // 一旦引入 VueJS核心包，在全局环境，就有了 Vue 构造函数
   new Vue({
@@ -21,15 +27,27 @@
       originText: "",
       transformedText:"",
     },
+    mounted() {
+    },
     methods: {
       transform() {
+        if(!this.originText) return;
         // 正则表达式匹配手机号码
         const phoneNumbers = this.originText.match(/1[3456789]\d{9}/g);
 
         // 将匹配到的手机号用空格隔开
         const result = phoneNumbers.join(" ");
         this.transformedText=result;
-        this.copyToClipBoard(result);
+        this.generateQRCode(result);
+        // this.copyToClipBoard(result);
+      },
+      generateQRCode(result) {
+      // 使用 qrcode.js 生成二维码
+      const qrcode = new QRCode(document.getElementById('qrcode'), {
+        text: `${result}`,
+        width: 128,
+        height: 128,
+      });
       },
       copyToClipBoard(result) {
         // 创建一个临时的textarea元素
@@ -52,6 +70,18 @@
   });
 </script>
 <style>
+  .main_index{
+    width:100%;
+    display: flex;
+    flex-direction: column;
+  }
   .button {
+    margin-top: 15px;
+    width:50%;
+  }
+  .transformedText{
+    margin-top: 15px;
+    margin-bottom: 15px;
   }
 </style>
+
